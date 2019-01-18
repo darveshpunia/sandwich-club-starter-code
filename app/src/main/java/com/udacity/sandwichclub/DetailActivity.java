@@ -12,20 +12,32 @@ import com.squareup.picasso.Picasso;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
 
-    TextView tvAlsoKnownAs, tvIngredients, tvPlaceOfOrigin, tvDescription;
     Sandwich sandwich;
+
+    @BindView(R.id.also_known_tv)
+    TextView tvAlsoKnownAs;
+    @BindView(R.id.ingredients_tv)
+    TextView tvIngredients;
+    @BindView(R.id.origin_tv)
+    TextView tvPlaceOfOrigin;
+    @BindView(R.id.description_tv)
+    TextView tvDescription;
+    @BindView(R.id.image_iv)
+    ImageView ingredientsIv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
-        ImageView ingredientsIv = findViewById(R.id.image_iv);
+        ButterKnife.bind(this);
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -53,14 +65,17 @@ public class DetailActivity extends AppCompatActivity {
             .load(sandwich.getImage())
             .into(ingredientsIv);
 
+        Picasso.with(this)
+            .load(sandwich.getImage())
+            .placeholder(R.drawable.image_placeholder)
+            .error(R.drawable.image_error)
+            .into(ingredientsIv);
+
         setTitle(sandwich.getMainName());
     }
 
     private void initialise() {
-        tvAlsoKnownAs = findViewById(R.id.also_known_tv);
-        tvIngredients = findViewById(R.id.ingredients_tv);
-        tvPlaceOfOrigin = findViewById(R.id.origin_tv);
-        tvDescription = findViewById(R.id.description_tv);
+
     }
 
     private void closeOnError() {
