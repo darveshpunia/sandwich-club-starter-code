@@ -3,7 +3,9 @@ package com.udacity.sandwichclub;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -14,6 +16,9 @@ public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
+
+    TextView tvAlsoKnownAs, tvIngredients, tvPlaceOfOrigin, tvDescription;
+    Sandwich sandwich;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,19 +41,26 @@ public class DetailActivity extends AppCompatActivity {
 
         String[] sandwiches = getResources().getStringArray(R.array.sandwich_details);
         String json = sandwiches[position];
-        Sandwich sandwich = JsonUtils.parseSandwichJson(json);
+        sandwich = JsonUtils.parseSandwichJson(json);
         if (sandwich == null) {
             // Sandwich data unavailable
             closeOnError();
             return;
         }
-
+        initialise();
         populateUI();
         Picasso.with(this)
-                .load(sandwich.getImage())
-                .into(ingredientsIv);
+            .load(sandwich.getImage())
+            .into(ingredientsIv);
 
         setTitle(sandwich.getMainName());
+    }
+
+    private void initialise() {
+        tvAlsoKnownAs = findViewById(R.id.also_known_tv);
+        tvIngredients = findViewById(R.id.ingredients_tv);
+        tvPlaceOfOrigin = findViewById(R.id.origin_tv);
+        tvDescription = findViewById(R.id.description_tv);
     }
 
     private void closeOnError() {
@@ -57,6 +69,9 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void populateUI() {
-
+        tvAlsoKnownAs.setText(TextUtils.join(", ", sandwich.getAlsoKnownAs()));
+        tvIngredients.setText(TextUtils.join(", ", sandwich.getIngredients()));
+        tvPlaceOfOrigin.setText(sandwich.getPlaceOfOrigin());
+        tvDescription.setText(sandwich.getDescription());
     }
 }
